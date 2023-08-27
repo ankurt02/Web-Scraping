@@ -1,4 +1,5 @@
 import scrapy
+from bookscraper.items import BookItem
 
 
 class BookspiderSpider(scrapy.Spider):
@@ -35,15 +36,17 @@ class BookspiderSpider(scrapy.Spider):
     
     def parse_book_page(self, response):
         
-        table_rows = response.css('table tr')
+        table_rows = response.css("table tr")
+        book_item = BookItem()
         
-        yield{
-            'url' : response.url,
-            'EAN' : table_rows[0].css('td ::text').get(),
-            'title': response.css('.product_main h1::text').get(),
-            'category' : response.xpath("//ul[@class='breadcrumb']/li[@class='active']/preceding-sibling::li[1]/a/text()").get(),
-            'price' : table_rows[3].css('td ::text').get(),
-            'availability' :table_rows[5].css('td ::text').get(),
-            'rating' : response.css('p.star-rating').attrib['class'],
-            'description' : response.xpath("//div[@id='product_description']/following-sibling::p/text()").get(),
-        }
+        book_item['url'] = response.url,
+        book_item['ean'] = table_rows[0].css('td ::text').get(),
+        book_item['title']= response.css('.product_main h1::text').get(),
+        book_item['category'] = response.xpath("//ul[@class='breadcrumb']/li[@class='active']/preceding-sibling::li[1]/a/text()").get(),
+        book_item['price'] = table_rows[3].css('td ::text').get(),
+        book_item['availability'] = table_rows[5].css('td ::text').get(),
+        book_item['rating'] = response.css('p.star-rating').attrib['class'],
+        book_item['description'] = response.xpath("//div[@id='product_description']/following-sibling::p/text()").get(),
+        
+        
+        yield book_item
