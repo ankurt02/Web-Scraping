@@ -6,7 +6,7 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-
+import mysql.connector
 
 class BookscraperPipeline:
     def process_item(self, item, spider):
@@ -72,3 +72,60 @@ class BookscraperPipeline:
             
         
         return item
+
+class SaveToDatabase:
+    
+    def __init__(self):
+        self.con = mysql.connector.connect(
+            host = 'localhost',
+            user = 'root',
+            password = 'root@123',
+            database = 'bookscraping'
+        )
+        
+        # increase the connection timeout from the mysql setting, depending upon the size of dataset
+        
+        self.cursor = self.con.cursor()
+        
+        create_table = """
+        CREATE TABLE IF NOT EXISTS BOOKSCRAPING(
+            id INTEGER NOT NULL AUTO_INCREMENT,
+            url VARCHAR(255),
+            ean VARCHAR(100),
+            title TEXT,
+            category VARCHAR(50),
+            price DECIMAL,
+            availability INTEGER,
+            rating INTEGER,
+            description TEXT,
+            PRIMARY KEY(id,ean)
+        )
+        """
+        
+        self.cursor.execute(create_table)
+    
+    def process_item(self, item, spider):
+        
+        insert_data = """
+        INSERT INTO BOOKSCRAPING(url, ean, title, category, price, availability, rating, description)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """,(
+                item['url'],
+                item['ean'],
+                item['title'],
+                item['category'],
+                item['price'],
+                item['availability'],
+                item['rating'],
+                str(item['description'][0])
+        )
+        
+        # self.cursor.execute(insert_data), this gives operational error, as all the data being fetched is encoded, using '*' decodes it into components
+        self.cursor.execute(*insert_data)
+        
+        self.con.commit()
+        return item
+    
+    def close_spider(self, spider):
+        self.cursor.close()
+        self.con.close()
