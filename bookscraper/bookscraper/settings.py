@@ -17,11 +17,20 @@ FEEDS ={
    'booksdata.json' : {'format' : 'json'}
 }
 
+# USER_AGENTS = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
+
+SCRAPEOPS_API_KEY= '7ddeeebd-ddac-42e6-bada-248e09a187af'
+SCRAPEOPS_FAKE_USER_AGENT_ENDPOINT = 'https://headers.scrapeops.io/v1/user-agents'
+SCRAPEOPS_FAKE_USER_AGENT_ENABLED = True
+SCRAPEOPS_NUM_RESULTS = 50
+
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "bookscraper (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False  # every sites have this which tells whether the website is open to be scraped or not, if this is true in our code and false in the website page, the scraping will be terminated, and if the value is set to false, it will not check for the value in the robot.txt file and will ignore it
+
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -55,7 +64,8 @@ SPIDER_MIDDLEWARES = {
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-   "bookscraper.middlewares.BookscraperDownloaderMiddleware": 543,
+   # "bookscraper.middlewares.BookscraperDownloaderMiddleware": 543,
+   "bookscraper.middlewares.ScrapeOpsFakeBrowserHeaderAgentMiddleware": 400,
 }
 
 # Enable or disable extensions
@@ -68,7 +78,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    "bookscraper.pipelines.BookscraperPipeline": 300,
-   "bookscraper.pipelines.SaveToDatabase": 400,
+   # "bookscraper.pipelines.SaveToDatabase": 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -128,4 +128,4 @@ class SaveToDatabase:
     
     def close_spider(self, spider):
         self.cursor.close()
-        self.con.close()
+        self.con.close() 
