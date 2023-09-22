@@ -18,8 +18,12 @@ FEEDS ={
 }
 
 # USER_AGENTS = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
+import os 
+from dotenv import load_dotenv
 
-SCRAPEOPS_API_KEY= '7ddeeebd-ddac-42e6-bada-248e09a187af'
+load_dotenv()
+
+SCRAPEOPS_API_KEY= os.getenv('MY_SCRAPEOPS_API_KEY')
 SCRAPEOPS_FAKE_USER_AGENT_ENDPOINT = 'https://headers.scrapeops.io/v1/user-agents'
 SCRAPEOPS_FAKE_USER_AGENT_ENABLED = True
 SCRAPEOPS_NUM_RESULTS = 50
